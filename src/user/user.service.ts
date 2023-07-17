@@ -14,7 +14,7 @@ export class UserService {
   ) {}
 
   async register(userDto: UserDto): Promise<User> {
-    const { username, password } = userDto;
+    const { username, password, role } = userDto;
 
     const existingUser = await this.userModel.findOne({ username }).exec();
     if (existingUser) {
@@ -25,6 +25,7 @@ export class UserService {
 
     const user = new this.userModel({
       username,
+      role,
       password: hashedPassword,
     });
 
@@ -51,7 +52,7 @@ export class UserService {
 
   async getAllUsers(): Promise<UserResponseDto[]> {
     const users = await this.userModel.find().select('id username').exec();
-    return users.map((user) => ({ id: user.id, username: user.username }));
+    return users.map((user) => ({ id: user.id, username: user.username,role: user.role }));
   }
 
   async getUserById(id: string): Promise<User> {

@@ -38,7 +38,6 @@ export class UserController {
       };
     }
   }
-  
   @Get()
   async getAllUsers(): Promise<any> {
     try {

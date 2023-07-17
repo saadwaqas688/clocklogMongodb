@@ -7,6 +7,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User, UserSchema } from './user/user.model';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
+import { ScreenCastController } from './screenCast/screen-cast.controller'; // Import the ScreenCastController
+import { ScreenCastService } from './screenCast/screen-cast.service'; // Import the ScreenCastService
+import { ScreenCast, ScreenCastSchema } from './screenCast/screen-cast.model'; // Import the ScreenCast model
 
 @Module({
   imports: [
@@ -22,6 +25,7 @@ import { UserService } from './user/user.service';
     }),
 
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: ScreenCast.name, schema: ScreenCastSchema }]), // Add the ScreenCast model
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -34,7 +38,7 @@ import { UserService } from './user/user.service';
       inject: [ConfigService],
     }),
   ],
-  controllers: [UserController],
-  providers: [UserService, JwtStrategy],
+  controllers: [UserController, ScreenCastController], // Add ScreenCastController to the controllers array
+  providers: [UserService, JwtStrategy, ScreenCastService], // Add ScreenCastService to the providers array
 })
 export class AppModule {}
