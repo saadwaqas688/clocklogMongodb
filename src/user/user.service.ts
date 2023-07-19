@@ -14,7 +14,7 @@ export class UserService {
   ) {}
 
   async register(userDto: UserDto): Promise<User> {
-    const { username, password, role } = userDto;
+    const { username, password, role, company, projects } = userDto;
 
     const existingUser = await this.userModel.findOne({ username }).exec();
     if (existingUser) {
@@ -27,6 +27,8 @@ export class UserService {
       username,
       role,
       password: hashedPassword,
+      company,
+      projects
     });
 
     return user.save();
@@ -51,8 +53,19 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<UserResponseDto[]> {
-    const users = await this.userModel.find().select('id username').exec();
-    return users.map((user) => ({ id: user.id, username: user.username,role: user.role }));
+    const users = await this.userModel
+      .find()
+      .select('id username role company')
+      .populate('projects') // Populate the 'projects' field with associated project documents
+      .exec();
+
+    return users.map((user) => ({
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      company: user.company,
+      projects: user.projects, // Add the 'projects' array to the user response
+    }));
   }
 
   async getUserById(id: string): Promise<User> {
